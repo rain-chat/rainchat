@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.article.ArticleMapper">
+    <resultMap id="BaseResultMap" type="com.example.domain.article.Article">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="text" jdbcType="VARCHAR" property="text" />
+        <result column="author_id" jdbcType="VARCHAR" property="authorId" />
+        <result column="author_name" jdbcType="VARCHAR" property="authorName" />
+        <result column="upload_date" jdbcType="TIMESTAMP" property="uploadDate" />
+        <result column="content" jdbcType="LONGVARCHAR" property="content" />
+        <result column="image" jdbcType="VARCHAR" property="image" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="html" jdbcType="LONGVARCHAR" property="html" />
+        <result column="collection" jdbcType="BIGINT" property="collection" />
+        <result column="views" jdbcType="BIGINT" property="views" />
+        <association property="authorName" column="author_id"
+                     javaType="com.example.domain.user.User"
+                     select="com.example.mapper.user.UserMapper.selectNameByPrimaryKey">
+        </association>
+    </resultMap>
+
+    <resultMap id="UniResultMap" type="com.example.domain.article.Article">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="text" jdbcType="VARCHAR" property="text" />
+        <result column="author_id" jdbcType="VARCHAR" property="authorId" />
+        <result column="upload_date" jdbcType="TIMESTAMP" property="uploadDate" />
+        <result column="content" jdbcType="LONGVARCHAR" property="content" />
+        <result column="image" jdbcType="VARCHAR" property="image" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="html" jdbcType="LONGVARCHAR" property="html" />
+        <result column="collection" jdbcType="BIGINT" property="collection" />
+        <result column="views" jdbcType="BIGINT" property="views" />
+        <result column="recommend" jdbcType="VARCHAR" property="recommend" />
+        <association property="collect" column="collect" javaType="com.example.domain.article.Collection">
+            <id column="id" property="id"/>
+            <result column="user_id" property="userId"></result>
+            <result column="article_id" property="articleId"></result>
+        </association>
+    </resultMap>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select * from article
+    </select>
+
+    <select id="selectByAuthorId" resultMap="BaseResultMap">
+        select * from article where author_id = #{authorId}
+    </select>
+
+    <select id="selectByStatus" resultMap="BaseResultMap">
+        select * from article where status = "发布"
+    </select>
+
+    <select id="selectByRecommend" resultMap="BaseResultMap">
+        select * from article  where recommend = "是"
+    </select>
+
+    <select id="listOfCollect" resultMap="UniResultMap">
+        select article.* ,collection.* from collection LEFT JOIN  article on article.id = collection.article_id
+        where collection.user_id = #{ collect.userId }
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select * from article where id=#{id}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from article
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.domain.article.Article">
+        insert into article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="text != null">
+                text,
+            </if>
+            <if test="authorId != null">
+                author_id,
+            </if>
+            <if test="uploadDate != null">
+                upload_date,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="image != null">
+                image,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="html != null">
+                html,
+            </if>
+            <if test="collection != null">
+                collection,
+            </if>
+            <if test="views != null">
+                views,
+            </if>
+            <if test="recommend != null">
+                recommend,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="text != null">
+                #{text,jdbcType=VARCHAR},
+            </if>
+            <if test="authorId != null">
+                #{authorId,jdbcType=VARCHAR},
+            </if>
+            <if test="uploadDate != null">
+                #{uploadDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="image != null">
+                #{image,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="html != null">
+                #{html,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="collection != null">
+                #{collection,jdbcType=BIGINT},
+            </if>
+            <if test="views != null">
+                #{views,jdbcType=BIGINT},
+            </if>
+            <if test="recommend != null">
+                #{recommend,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.article.Article">
+        update article
+        <set>
+            <if test="id != null">
+             id= #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+             title= #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="text != null">
+             text= #{text,jdbcType=VARCHAR},
+            </if>
+            <if test="authorId != null">
+             author_id =  #{authorId,jdbcType=VARCHAR},
+            </if>
+            <if test="uploadDate != null">
+              upload_date = #{uploadDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+              content=  #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="image != null">
+              image=  #{image,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+              status=  #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="html != null">
+              html=  #{html,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="collection != null">
+              collection= #{collection,jdbcType=BIGINT},
+            </if>
+            <if test="views != null">
+              views= #{views,jdbcType=BIGINT},
+            </if>
+            <if test="recommend != null">
+                recommend=  #{recommend,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>

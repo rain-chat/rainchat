@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.user.UserMapper">
+    <resultMap id="BaseResultMap" type="com.example.domain.user.User">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="head_img" jdbcType="VARCHAR" property="headImg" />
+        <result column="registration_date" jdbcType="TIMESTAMP" property="registrationDate" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="sign" jdbcType="VARCHAR" property="sign" />
+        <result column="level" jdbcType="BIGINT" property="level" />
+        <result column="experience" jdbcType="BIGINT" property="experience" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id,name,head_img,registration_date,status,sign,level,experience,phone from user
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select id,name,head_img,registration_date,status,level,experience,phone from user where id= #{ id }
+    </select>
+
+    <select id="userInfo" resultMap="BaseResultMap">
+        select id,name,head_img,registration_date,sign,level,experience,phone from user where id=#{id}
+    </select>
+
+    <select id="selectNameByPrimaryKey" resultType="java.lang.String">
+    select name from user where id=#{ id }
+    </select>
+
+    <select id="selectLevelByPrimaryKey" resultType="java.lang.Integer">
+        select level from user where id=#{ id }
+    </select>
+
+    <select id="selectByPhone" resultMap="BaseResultMap">
+        select * from user where phone = #{phone}
+    </select>
+
+    <select id="login" resultMap="BaseResultMap">
+        select * from user where id=#{id} and password =#{password} and status=#{status}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from user
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.user.User">
+        update user
+        <set>
+            <if test="id != null">
+                id= #{id,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                name= #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password= #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="headImg != null">
+                head_img = #{headImg,jdbcType=VARCHAR},
+            </if>
+            <if test="registrationDate != null">
+                registration_date = #{registrationDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status=  #{status,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="sign != null">
+                sign=  #{sign,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="level != null">
+                level=  #{level,jdbcType=BIGINT},
+            </if>
+            <if test="experience != null">
+                experience=  #{experience,jdbcType=BIGINT},
+            </if>
+            <if test="phone != null">
+                phone =  #{phone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <insert id="insert" parameterType="com.example.domain.article.Article">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null">
+            id,
+        </if>
+        <if test="name != null">
+            name,
+        </if>
+        <if test="password != null">
+            password,
+        </if>
+        <if test="headImg != null">
+            head_img,
+        </if>
+        <if test="registrationDate != null">
+            registration_date,
+        </if>
+        <if test="status != null">
+            status,
+        </if>
+        <if test="sign != null">
+            sign,
+        </if>
+        <if test="level != null">
+            level,
+        </if>
+        <if test="experience != null">
+            experience,
+        </if>
+        <if test="phone != null">
+            phone,
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="id != null">
+            #{id,jdbcType=BIGINT},
+        </if>
+        <if test="name != null">
+            #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="password != null">
+            #{password,jdbcType=VARCHAR},
+        </if>
+        <if test="headImg != null">
+            #{headImg,jdbcType=VARCHAR},
+        </if>
+        <if test="registrationDate != null">
+            #{registrationDate,jdbcType=TIMESTAMP},
+        </if>
+        <if test="status != null">
+            #{status,jdbcType=VARCHAR},
+        </if>
+        <if test="sign != null">
+            #{sign,jdbcType=VARCHAR},
+        </if>
+        <if test="level != null">
+            #{level,jdbcType=VARCHAR},
+        </if>
+        <if test="experience != null">
+            #{experience,jdbcType=VARCHAR},
+        </if>
+        <if test="phone != null">
+            #{phone,jdbcType=VARCHAR},
+        </if>
+    </trim>
+</insert>
+</mapper>

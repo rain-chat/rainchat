@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.article.CommentsMapper">
+    <resultMap id="BaseResultMap" type="com.example.domain.article.Comments">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
+        <result column="date" jdbcType="TIMESTAMP" property="date" />
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+        <result column="text" jdbcType="VARCHAR" property="text" />
+        <result column="at_id" jdbcType="BIGINT" property="atId" />
+        <association property="userName" column="user_id"
+                     javaType="com.example.domain.user.User"
+                     select="com.example.mapper.user.UserMapper.selectNameByPrimaryKey">
+        </association>
+        <association property="atName" column="at_id"
+                     javaType="com.example.domain.user.User"
+                     select="com.example.mapper.user.UserMapper.selectNameByPrimaryKey">
+        </association>
+        <association property="userLevel" column="user_id"
+                     javaType="com.example.domain.user.User"
+                     select="com.example.mapper.user.UserMapper.selectLevelByPrimaryKey">
+        </association>
+        <association property="atLevel" column="at_id"
+                     javaType="com.example.domain.user.User"
+                     select="com.example.mapper.user.UserMapper.selectLevelByPrimaryKey">
+        </association>
+    </resultMap>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select * from comments where parent_id= #{ parentId }
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from comments
+        where parent_id= #{ parentId }
+    </delete>
+    <insert id="insert" parameterType="com.example.domain.article.Comments">
+        insert into comments
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="date != null">
+                date,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="text != null">
+                text,
+            </if>
+            <if test="atId != null">
+                at_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="date != null">
+                #{date,jdbcType=TIMESTAMP},
+            </if>
+            <if test="parentId != null">
+                #{parentId ,jdbcType=VARCHAR},
+            </if>
+            <if test="text != null">
+                #{text ,jdbcType=VARCHAR},
+            </if>
+            <if test="atId != null">
+                #{atId ,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.article.Comments">
+        update comments
+        <set>
+            <if test="id != null">
+               id= #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+               user_id= #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="date != null">
+              date =  #{date,jdbcType=TIMESTAMP},
+            </if>
+            <if test="parentId != null">
+              parent_id = #{parentId ,jdbcType=VARCHAR},
+            </if>
+            <if test="text != null">
+              text = #{text ,jdbcType=VARCHAR},
+            </if>
+            <if test="atId != null">
+              at_id=  #{atId ,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>
